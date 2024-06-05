@@ -1,5 +1,6 @@
-import { Box, Container, VStack, Text, Image, Heading, SimpleGrid, Link, Flex, Spacer, HStack, IconButton } from "@chakra-ui/react";
-import { FaFacebook, FaTwitter, FaInstagram } from "react-icons/fa";
+import { useState } from "react";
+import { Box, Container, VStack, Text, Image, Heading, SimpleGrid, Link, Flex, Spacer, HStack, IconButton, Input, InputGroup, InputLeftElement } from "@chakra-ui/react";
+import { FaFacebook, FaTwitter, FaInstagram, FaSearch } from "react-icons/fa";
 
 const sampleProducts = [
   {
@@ -33,6 +34,17 @@ const sampleProducts = [
 ];
 
 const Index = () => {
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const handleSearchChange = (event) => {
+    setSearchQuery(event.target.value.toLowerCase());
+  };
+
+  const filteredProducts = sampleProducts.filter(product =>
+    product.name.toLowerCase().includes(searchQuery) ||
+    product.description.toLowerCase().includes(searchQuery)
+  );
+
   return (
     <Box>
       <Box as="header" bg="blue.800" color="white" py={4}>
@@ -53,8 +65,17 @@ const Index = () => {
       <Container maxW="container.xl" py={8}>
         <VStack spacing={4} align="start">
           <Heading as="h2" size="xl">Featured Products</Heading>
+          <InputGroup mb={4}>
+            <InputLeftElement pointerEvents="none" children={<FaSearch color="gray.300" />} />
+            <Input
+              type="text"
+              placeholder="Search for products..."
+              value={searchQuery}
+              onChange={handleSearchChange}
+            />
+          </InputGroup>
           <SimpleGrid columns={{ base: 1, md: 2, lg: 4 }} spacing={8} width="100%">
-            {sampleProducts.map(product => (
+            {filteredProducts.map(product => (
               <Box key={product.id} borderWidth="1px" borderRadius="lg" overflow="hidden" p={4}>
                 <Image src={product.image} alt={product.name} mb={4} />
                 <Heading as="h3" size="md" mb={2}>{product.name}</Heading>
